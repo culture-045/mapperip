@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+
+import pyautogui
+import os
+import requests
+import json
+import pwd
+from time import sleep
+
+usr = pwd.getpwuid(os.getuid()).pw_name
+if os.path.isfile('/home/{}/.Xdefaults'.format(usr)) == False:
+	with open('/home/{}/.Xdefaults'.format(usr), 'w') as file_x:
+		file_x.write('''
+xterm*colorMode: on
+xterm*background: #AfAfAf
+xterm*foreground: #000000\n
+		''')
+	os.system('xrdb -merge /home/{}/.Xdefaults'.format(usr))
+else:
+	os.remove('/home/{}/.Xdefaults'.format(usr))
+	with open('/home/{}/.Xdefaults'.format(usr), 'w') as file_x:
+                file_x.write('''
+xterm*colorMode: on
+xterm*background: #000000
+xterm*foreground: #AfAfAf\n
+                ''')
+	os.system('xrdb -merge /home/{}/.Xdefaults'.format(usr))
+
+
+def main(apikey, ip):
+	agent = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62'}
+	print('Escaneando...')
+	pe = requests.get(
+	'http://api.ipapi.com/{}?access_key={}'.format(ip,apikey),
+	headers=agent
+)
+	
+	data = json.loads(pe.text)
+	if 'location' in data:
+		del data['location']
+	if 'country_name' in data:
+		loc = data['country_name']
+	if 'success' in data:
+	        del data['error']
+
+	for i in data:
+		print('\t {}: {}'.format(i, data[i]))
+		#if data['country_name'] == 'Mexico':
+			#print('Mexico')
+			#break
+
+	if 'ip' in data:
+	        os.system("xterm -fa 'Monospace' -fs 5 -geometry 240x55")
+'''
+	        pyautogui.typewrite("xterm -fa 'Monospace' -fs 5 -geometry 240x55 &"), sleep(1)
+	        pyautogui.press('enter')
+	        pyautogui.typewrite('python mapa.py --city {}'.format(loc)), sleep(1)
+	        pyautogui.press('enter')
+'''
+
+main(apikey='2d9ddbc2737637df39222ebd7869c6b8',ip=input('Enter the object: '))
+'''
+if data == ''
+	os.system('xterm')
+	pyautogui.typewrite("xterm -fa 'Monospace' -fs 5 -geometry 240x55 &")
+	pyautogui.press('enter')
+	pyautogui.typewrite('python mapa.py --city {}'.format(loc))
+	pyautogui.press('enter')
+
+
+'''
+#print(loc)
